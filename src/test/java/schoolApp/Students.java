@@ -1,21 +1,23 @@
 package schoolApp;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-import payloads.Payloads;
-import utils.RestUtils;
+import restUtils.RestUtils;
+import utils.JsonUtils;
+import utils.PropertiesReader;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Students {
-    String endpoint = "https://reqres.in";
     @Test
-    public void createUser(){
-       Response res = RestUtils.performPost(endpoint, Payloads.CreateStudentPayload(),new HashMap<>());
-        System.out.println(res);
+    public void createUser() throws IOException {
+        Map<String, String> data = JsonUtils.getJsonDataAsMap("Student.json");
+        String endpoint = PropertiesReader.readPropertiesFile("endpoint");
+
+        Response response = RestUtils.performPost(endpoint, data, new HashMap<>());
+        System.out.println(response.getBody().asString());
 
 
     }
