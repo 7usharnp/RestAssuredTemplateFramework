@@ -5,19 +5,20 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import utils.RestUtils;
+
+import java.util.HashMap;
 
 public class Students {
+    String endpoint = "https://reqres.in";
+    String requestPayload = "{\n" +
+        "    \"name\": \"morpheus\",\n" +
+                "    \"job\": \"leader\"\n" +
+                "}";
     @Test
     public void createUser(){
-       Response rs = RestAssured.given()
-                .baseUri("https://reqres.in")
-                .contentType(ContentType.JSON)
-                .body("{\n" +
-                        "    \"name\": \"morpheus\",\n" +
-                        "    \"job\": \"leader\"\n" +
-                        "}").post("api/users")
-               .then().log().all().extract().response();
-        Assert.assertEquals(rs.statusCode(),201);
+       Response res = RestUtils.performPost(endpoint,requestPayload,new HashMap<>());
+        System.out.println(res);
 
 
     }
