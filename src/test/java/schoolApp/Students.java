@@ -5,19 +5,16 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import payloads.Payloads;
 import utils.RestUtils;
 
 import java.util.HashMap;
 
 public class Students {
     String endpoint = "https://reqres.in";
-    String requestPayload = "{\n" +
-        "    \"name\": \"morpheus\",\n" +
-                "    \"job\": \"leader\"\n" +
-                "}";
     @Test
     public void createUser(){
-       Response res = RestUtils.performPost(endpoint,requestPayload,new HashMap<>());
+       Response res = RestUtils.performPost(endpoint, Payloads.CreateStudentPayload(),new HashMap<>());
         System.out.println(res);
 
 
