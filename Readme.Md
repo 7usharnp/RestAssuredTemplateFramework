@@ -20,7 +20,7 @@ created post utility method which can be reused with any post method to avoid re
 Created special class which provide payloads which make code less clumsy.
 This can be done in two ways 
    1. Create method which return String in payload 
-        ``` 
+        ``` java
       public static String CreateStudentPayload(){
       return "{\n" +
       "    \"name\": \"morpheus\",\n" +
@@ -29,7 +29,7 @@ This can be done in two ways
       } 
       ```
    2.  Create a hashmap which return hashmap
-       ```
+       ```java
        public Map<String,Object>  CreateStudentPayload2(){
         Map<String,Object> payload = new HashMap<>();
         payload.put("name", "morpheus");
@@ -45,7 +45,7 @@ This can be done in two ways
 we can also store json files in resources of test folder and use it with json util 
 method to fetch that data from json file
 
-```
+```java
 # util method to fetch json payload  from resouces folder json file
 public static Map<String, String> getJsonAsMap(String jsonFileName) throws IOException {
         String completeJsonPath = System.getProperty("user.dir") + "/src/test/resources/" + jsonFileName;
@@ -66,7 +66,7 @@ String endpoint = PropertiesReader.readPropertiesFile("endpoint");
 Steps:
 1. create testng.xml file 
 2. add surefire plugin in pom.xml file (inside build section)
-```
+```xml
 <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -86,7 +86,7 @@ Steps:
 Steps:
 1. create base class
 2. add static block in it 
-```
+```java
 public static Map<String,Object> dataFromJsonFile;
     public static String endpoint;
     static {
@@ -99,8 +99,8 @@ public static Map<String,Object> dataFromJsonFile;
     }
 ```
 3. To fetch particular data in desired just import static varible like below code 
-```
-#Base.endpoint and Base.dataFromJsonFile fetch data.
+```java
+//Base.endpoint and Base.dataFromJsonFile fetch data.
  Response response = RestUtils.performPost(Base.endpoint, Base.dataFromJsonFile, new HashMap<>());
 ```
 
@@ -130,7 +130,7 @@ Create faker class object and user RandomStringUtils to generate fake data as sh
 
 Create generic methods to cater this need
  + Created enum with firstname, lastname , country etc
-   ```
+   ```java
    public enum RandomDataTypeNames {
     FIRSTNAME,
     LASTNAME,
@@ -142,7 +142,7 @@ Create generic methods to cater this need
    ```
  
  + created generic class which provide random data
-   ```
+   ```java
    public class RandomDataGenerator {
 
     public static Faker faker = new Faker();
@@ -174,3 +174,53 @@ Create generic methods to cater this need
     }
    }
    ```
+   
+### POJO class integration
+Steps:
+ * Create new pojo package 
+ * create new class with pojo desired name
+ * add variable as per need and add @Data @Builder annotations above class to generate getter setter boilerplate code automatically.
+ ```java
+ @Data
+@Builder
+public class Student {
+    private String name;
+    private String job;
+
+}
+ ```
+
+* write static method inside Payloads.java which will help in returning student object
+```java
+ public static Student createStudentPayloadFromPojo(){
+       return Student
+                .builder()
+                .name(RandomDataGenerator.getRandomData(RandomDataTypeNames.FULLNAME))
+               .job("Automation Test Lead")
+               .build();
+    }
+```
+
+* Write generic method inside RestUtils which accept pojo object
+``` java
+ //This post method will be used when payload is in POJO 
+    public static Response performPost(String endpoint, Object requestPayloadPojo, Map<String,String> headers){
+        RequestSpecification requestSpecification = getRequestSpecification( endpoint,  requestPayloadPojo,  headers);
+        Response response = requestSpecification.post();
+        printRequestLogInReport(requestSpecification);
+        printResponseLogInReport(response);
+        return response;
+
+    }
+```
+* Create Object Student payload by calling createStudentPayloadFromPojo() method
+and pass it to generic performPostMethod
+``` java
+ @Test
+    public void createUser(){
+        Student payload = Payloads.createStudentPayloadFromPojo();
+        Response response = RestUtils.performPost(Base.endpoint,payload,new HashMap<>());
+        Assert.assertEquals(response.statusCode(),201);
+
+    }
+```

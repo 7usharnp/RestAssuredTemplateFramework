@@ -7,7 +7,7 @@ public class RandomDataGenerator {
 
     public static Faker faker = new Faker();
 
-    public static String getRandomDataFaker(RandomDataTypeNames dataTypeNames){
+    public static String getRandomData(RandomDataTypeNames dataTypeNames){
         switch (dataTypeNames){
             case FIRSTNAME:
              return   faker.name().firstName();

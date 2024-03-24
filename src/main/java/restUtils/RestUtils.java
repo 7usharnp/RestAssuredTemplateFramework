@@ -61,4 +61,14 @@ public class RestUtils {
 
     }
 
+    //This post method will be used when payload is in POJO
+    public static Response performPost(String endpoint, Object requestPayloadPojo, Map<String,String> headers){
+        RequestSpecification requestSpecification = getRequestSpecification( endpoint,  requestPayloadPojo,  headers);
+        Response response = requestSpecification.post();
+        printRequestLogInReport(requestSpecification);
+        printResponseLogInReport(response);
+        return response;
+
+    }
+
 }

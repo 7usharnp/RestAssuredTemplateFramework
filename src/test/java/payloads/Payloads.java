@@ -1,5 +1,9 @@
 package payloads;
 
+import pojos.Student;
+import utils.RandomDataGenerator;
+import utils.RandomDataTypeNames;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,5 +23,13 @@ public class Payloads {
         payload.put("name", "morpheus");
         payload.put("job", "leader");
         return payload;
+    }
+
+    public static Student createStudentPayloadFromPojo(){
+       return Student
+                .builder()
+                .name(RandomDataGenerator.getRandomData(RandomDataTypeNames.FULLNAME))
+               .job("Automation Test Lead")
+               .build();
     }
 }
