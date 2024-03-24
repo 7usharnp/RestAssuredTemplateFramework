@@ -125,4 +125,52 @@ Steps to add extend report:
   + create class ExtentReportManager inside it.
 
 ### User faker data 
+Create faker class object and user RandomStringUtils to generate fake data as shown below.
 <img src="src\test\resources\images\Screenshot 2024-03-24 160139.png" >
+
+Create generic methods to cater this need
+ + Created enum with firstname, lastname , country etc
+   ```
+   public enum RandomDataTypeNames {
+    FIRSTNAME,
+    LASTNAME,
+    FULLNAME,
+    COUNTRY,
+    ZIPCODE
+    }
+
+   ```
+ 
+ + created generic class which provide random data
+   ```
+   public class RandomDataGenerator {
+
+    public static Faker faker = new Faker();
+
+    public static String getRandomDataFaker(RandomDataTypeNames dataTypeNames){
+        switch (dataTypeNames){
+            case FIRSTNAME:
+             return   faker.name().firstName();
+            case LASTNAME:
+                return  faker.name().lastName();
+            case FULLNAME:
+                return faker.name().fullName();
+            case ZIPCODE:
+                return faker.address().zipCode();
+            case COUNTRY:
+                return faker.address().country();
+            default:
+                return " ";
+        }
+
+    }
+   
+     public static String getRandomNumber(int count){
+        return faker.number().digits(count);
+    }
+
+    public static String getRandomAlphabates(int size){
+        return RandomStringUtils.randomAlphabetic(size);
+    }
+   }
+   ```
