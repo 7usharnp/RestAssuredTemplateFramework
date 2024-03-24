@@ -1,6 +1,7 @@
 package schoolApp;
 
 import io.restassured.response.Response;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import restUtils.RestUtils;
 import utils.JsonUtils;
@@ -13,12 +14,9 @@ import java.util.Map;
 public class Students {
     @Test
     public void createUser() throws IOException {
-        Map<String, String> data = JsonUtils.getJsonDataAsMap("Student.json");
-        String endpoint = PropertiesReader.readPropertiesFile("endpoint");
-
-        Response response = RestUtils.performPost(endpoint, data, new HashMap<>());
-        System.out.println(response.getBody().asString());
-
+        Response response = RestUtils.performPost(Base.endpoint, Base.dataFromJsonFile, new HashMap<>());
+        //System.out.println(response.getBody().asString());
+        Assert.assertEquals(response.statusCode(),200);
 
     }
 }

@@ -14,9 +14,9 @@ public class JsonUtils {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static Map<String, String> getJsonDataAsMap(String jsonFileName) throws IOException {
+    public static Map<String, Object> getJsonDataAsMap(String jsonFileName) throws IOException {
         String completeJsonPath = System.getProperty("user.dir") + "/src/test/resources//Students/Dev/" + jsonFileName;
-         Map <String,String> data =  objectMapper.readValue(new File(completeJsonPath), new TypeReference<>() {});
+         Map <String,Object> data =  objectMapper.readValue(new File(completeJsonPath), new TypeReference<>() {});
          return data;
     }
 }

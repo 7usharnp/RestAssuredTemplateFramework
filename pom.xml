@@ -54,9 +54,9 @@
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.github.javafaker/javafaker -->
     <dependency>
-      <groupId>com.github.javafaker</groupId>
-      <artifactId>javafaker</artifactId>
-      <version>${javaFakerVersion}</version>
+      <groupId>net.datafaker</groupId>
+      <artifactId>datafaker</artifactId>
+      <version>1.8.0</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
     <dependency>

@@ -80,4 +80,49 @@ Steps:
       
 ```
 3. Enter mvn test command in terminal to execute the code.
+---
 
+### Created static block for reusable data
+Steps:
+1. create base class
+2. add static block in it 
+```
+public static Map<String,Object> dataFromJsonFile;
+    public static String endpoint;
+    static {
+        try {
+            dataFromJsonFile= JsonUtils.getJsonDataAsMap("Student.json");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+         endpoint = PropertiesReader.readPropertiesFile("endpoint");
+    }
+```
+3. To fetch particular data in desired just import static varible like below code 
+```
+#Base.endpoint and Base.dataFromJsonFile fetch data.
+ Response response = RestUtils.performPost(Base.endpoint, Base.dataFromJsonFile, new HashMap<>());
+```
+
+
+### Extent report integration
+
+For any Api below paramenter can be added as part of extent report
+1. Request 
+    * base Uri
+    * method type
+    * request header
+    * body
+2. Response 
+    * response body
+    * response header
+    * Status code
+3. Assertions
+   
+Steps to add extend report:
+  + add extent report dependency in pom.xml file
+  + create package reporting inside main folder
+  + create class ExtentReportManager inside it.
+
+### User faker data 
+<img src="src\test\resources\images\Screenshot 2024-03-24 160139.png" >
