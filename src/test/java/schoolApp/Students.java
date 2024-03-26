@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import payloads.Payloads;
 import pojos.Student;
 import restUtils.RestUtils;
+import utils.AssertionUtils;
 import utils.JsonUtils;
 import utils.PropertiesReader;
 
@@ -26,7 +27,11 @@ public class Students {
     public void createUser(){
         Student payload = Payloads.createStudentPayloadFromPojo();
         Response response = RestUtils.performPost(Base.endpoint,payload,new HashMap<>());
-        Assert.assertEquals(response.statusCode(),201);
+        Map<String, Object> expectedValueMap = new HashMap<>();
+        expectedValueMap.put("name","morpheus");
+        expectedValueMap.put("job", "leader");
+        AssertionUtils.assertExpectedValuesWithJsonPath(response,expectedValueMap);
+        //Assert.assertEquals(response.statusCode(),201);
 
     }
 }

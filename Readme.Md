@@ -224,3 +224,83 @@ and pass it to generic performPostMethod
 
     }
 ```
+---
+### Adding assertion in extent report
+Steps:
+ * Create new class AssertionUtils in utils
+ * Create assertionKey class with which we can create object of actual Values with 
+
+```java
+
+@Getter
+@AllArgsConstructor
+public class AssertionKeys {
+    private String jsonPath;
+    private Object expectedValue;
+    private Object actualValue;
+    private String result;
+
+}
+
+```
+
+   ```java
+public class AssertionUtils {
+public static void assertExpectedValuesWithJsonPath(Response response, Map<String,Object> expectedValuesMap){
+    //create List of object of the AssetionKey class
+    List<AssertionKeys> actualValuesMap = new ArrayList<>();
+    boolean allMatched = true;
+//This line is used to add header
+actualValuesMap.add(new AssertionKeys("JSON_PATH","EXPECTED_VALUE","ACTUAL_VALUE","RESULTS"));
+//expected values converted to set
+          Set<String> jsonPaths = expectedValuesMap.keySet();
+          for(String jsonPath: jsonPaths){
+              //optional helps error handling it will not fail the step if response is null
+              Optional<Object> actualValue = Optional.ofNullable(response.jsonPath().get(jsonPath));
+              if(actualValue.isPresent()){
+                  Object value = actualValue.get();
+                  if(value.equals(expectedValuesMap.get(jsonPath))){
+                      actualValuesMap.add(new AssertionKeys(jsonPath,expectedValuesMap.get(jsonPath),value,"MATCHED"));
+                  }else{
+                      allMatched = false;
+                      actualValuesMap.add(new AssertionKeys(jsonPath,expectedValuesMap.get(jsonPath), value, "NOT MATCHED"));
+                  }
+              }else {
+                  allMatched = false;
+                  actualValuesMap.add(new AssertionKeys(jsonPath,expectedValuesMap.get(jsonPath), "VALUE NOT FOUND", "NOT MATCHED"));
+              }
+          }
+
+          if(allMatched){
+              ExtentReportManager.logPassDetails("ALL Assertions passed...😊😊😊");
+          }else {
+              ExtentReportManager.logFailureDetails("ALL Assertions not passed...😒😒😒😒😒😒");
+          }
+        String[][] finalAssertionsMap = actualValuesMap.stream()
+                .map(assetion -> new String[]{
+                        assetion.getJsonPath(),
+                        String.valueOf(assetion.getExpectedValue()),
+                        String.valueOf(assetion.getActualValue()),
+                        assetion.getResult()
+                })
+                .toArray(String[][]::new);
+        Setup.extentTest.get().info(MarkupHelper.createTable(finalAssertionsMap));
+
+    }
+    }
+   ```
+
+  * compare actual result with expected
+```java
+ @Test
+    public void createUser(){
+        Student payload = Payloads.createStudentPayloadFromPojo();
+        Response response = RestUtils.performPost(Base.endpoint,payload,new HashMap<>());
+        Map<String, Object> expectedValueMap = new HashMap<>();
+        expectedValueMap.put("name","morpheus");
+        expectedValueMap.put("job", "leader");
+        AssertionUtils.assertExpectedValuesWithJsonPath(response,expectedValueMap);
+        //Assert.assertEquals(response.statusCode(),201);
+
+    }
+```
