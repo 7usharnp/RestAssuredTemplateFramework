@@ -80,8 +80,8 @@ Steps:
       
 ```
 3. Enter mvn test command in terminal to execute the code.
----
 
+---
 ### Created static block for reusable data
 Steps:
 1. create base class
@@ -103,7 +103,7 @@ public static Map<String,Object> dataFromJsonFile;
 //Base.endpoint and Base.dataFromJsonFile fetch data.
  Response response = RestUtils.performPost(Base.endpoint, Base.dataFromJsonFile, new HashMap<>());
 ```
-
+---
 
 ### Extent report integration
 
@@ -124,6 +124,7 @@ Steps to add extend report:
   + create package reporting inside main folder
   + create class ExtentReportManager inside it.
 
+---
 ### User faker data 
 Create faker class object and user RandomStringUtils to generate fake data as shown below.
 <img src="src\test\resources\images\Screenshot 2024-03-24 160139.png" >
@@ -174,7 +175,7 @@ Create generic methods to cater this need
     }
    }
    ```
-   
+---
 ### POJO class integration
 Steps:
  * Create new pojo package 
@@ -304,3 +305,104 @@ actualValuesMap.add(new AssertionKeys("JSON_PATH","EXPECTED_VALUE","ACTUAL_VALUE
 
     }
 ```
+
+---
+
+### Data Driven Testing with excel
+Steps:-
+ * Add **Apache Poi common** and **Apache Poi api based on opc and OOXML schemas** to pom.xml file to add these dependencies
+```xml
+<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+```
+ * Add ExcelReaderUtilsMethod to read excel data
+ ```java
+public class ExcelReaderUtils {
+    public static List<LinkedHashMap<String, String>> getExcelDataAsList(String excelFileName, String sheetName) throws IOException {
+        List<LinkedHashMap<String, String>> dataFromExcel = new ArrayList<>();
+        //access excel file
+        Workbook workbook = WorkbookFactory.create(new File(Constants.excelFilePath + excelFileName + ".xlsx"));
+        //access desired sheet
+        Sheet sheet = workbook.getSheet(sheetName);
+        //Fetch total number of rows
+        int totalRows = sheet.getPhysicalNumberOfRows();
+        List<String> allKeys = new ArrayList<>();
+        DataFormatter dataFormatter = new DataFormatter();
+        LinkedHashMap<String, String> mapData;
+        for (int i = 0; i < totalRows; i++) {
+            mapData = new LinkedHashMap<>();
+            if (i == 0) {
+                int totalCols = sheet.getRow(i).getPhysicalNumberOfCells();
+                //This for loop helps to fetch columns title from first row.
+                for (int j = 0; j < totalCols; j++) {
+                    allKeys.add(sheet.getRow(i).getCell(j).getStringCellValue());
+                }
+            } else {
+                //This code fetch data from 2nd row onwards
+                int totalCols = sheet.getRow(i).getPhysicalNumberOfCells();
+                for (int j = 0; j < totalCols; j++) {
+                    //Cell value fetched is converted in String.
+                    String cellValue = dataFormatter.formatCellValue(sheet.getRow(i).getCell(j));
+                    //data is stored in key value pair.
+                    mapData.put(allKeys.get(j), cellValue);
+                }
+                dataFromExcel.add(mapData);
+
+            }
+        }
+
+
+        return dataFromExcel;
+    }
+}
+
+```
+ * Now create DataProvider method which will fetch data from excel to make framework data driven
+```java
+ @Test(dataProvider = "studentData")
+    public void createUser(Student student) throws IOException {
+
+        Response response = RestUtils.performPost(Base.endpoint, student, new HashMap<>());
+        Map<String, Object> expectedValueMap = new HashMap<>();
+        System.out.println(response);
+        expectedValueMap.put("name", "morpheus2");
+        expectedValueMap.put("job", "leader");
+        AssertionUtils.assertExpectedValuesWithJsonPath(response, expectedValueMap);
+        Assert.assertEquals(response.statusCode(),201);
+
+    }
+
+    //
+    @DataProvider(name="studentData")
+    public Iterator<Student> getStudentData() throws IOException {
+        List<Student> stdData = new ArrayList<>();
+        List<LinkedHashMap<String, String>> excelDataAsListOfMap = ExcelReaderUtils.getExcelDataAsList("StudentTestData", "StudentsPayloads");
+        for (LinkedHashMap<String, String> data : excelDataAsListOfMap) {
+            Student student = Student.builder()
+                    .name(data.get("Name"))
+                    .job(data.get("Job"))
+                    .build();
+
+            stdData.add(student);
+
+        }
+        return stdData.iterator();
+    }
+```
+
+---
+
+
+
+

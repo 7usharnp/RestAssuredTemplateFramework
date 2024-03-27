@@ -32,7 +32,7 @@ public class AssertionUtils {
           }
 
           if(allMatched){
-              ExtentReportManager.logPassDetails("ALL Assertions passed...😊😊😊");
+              ExtentReportManager.logPassDetails("All Assertions passed...😊😊😊");
           }else {
               ExtentReportManager.logFailureDetails("ALL Assertions not passed...😒😒😒😒😒😒");
           }
