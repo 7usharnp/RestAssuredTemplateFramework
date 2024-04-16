@@ -13,6 +13,7 @@ import java.util.Map;
 public class RestUtils {
 
     private static void helloWorld(String name){
+                System.out.println("hello sandesh");
         
     }
     private static RequestSpecification getRequestSpecification(String endpoint, Object requestPayload, Map<String,String> headers){
