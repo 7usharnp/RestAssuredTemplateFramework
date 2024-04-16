@@ -12,6 +12,9 @@ import java.util.Map;
 
 public class RestUtils {
 
+    private static void helloWorld(){
+        
+    }
     private static RequestSpecification getRequestSpecification(String endpoint, Object requestPayload, Map<String,String> headers){
         return RestAssured.given()
                 .baseUri(endpoint)
