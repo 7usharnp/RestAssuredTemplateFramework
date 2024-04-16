@@ -273,7 +273,7 @@ actualValuesMap.add(new AssertionKeys("JSON_PATH","EXPECTED_VALUE","ACTUAL_VALUE
           }
 
           if(allMatched){
-              ExtentReportManager.logPassDetails("ALL Assertions passed...😊😊😊");
+              ExtentReportManager.logPassDetails("ALL Assertions passed...😊😊😊😊😊😊😊");
           }else {
               ExtentReportManager.logFailureDetails("ALL Assertions not passed...😒😒😒😒😒😒");
           }
@@ -415,6 +415,7 @@ Steps:
             <version>4.1.1</version>
         </dependency>
 ```
+
 2. Create poiji method to map the data
 ```java
 @ToString
