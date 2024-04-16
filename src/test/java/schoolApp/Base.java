@@ -1,7 +1,7 @@
 package schoolApp;
 
 import utils.JsonUtils;
-import utils.PropertiesReader;
+import utils.ConfigReader;
 
 import java.io.IOException;
 import java.util.Map;
@@ -15,6 +15,6 @@ public class Base {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-         endpoint = PropertiesReader.readPropertiesFile("endpoint");
+         endpoint = ConfigReader.getProperty("endpoint");
     }
 }

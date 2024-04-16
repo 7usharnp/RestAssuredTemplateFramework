@@ -403,6 +403,62 @@ public class ExcelReaderUtils {
 
 ---
 
+### POIJI library to read excel data
+Poiji is alternative to data
+Steps: 
+1. add poiji dependency to pom.xml file
+```xml
+<!-- https://mvnrepository.com/artifact/com.github.ozlerhakan/poiji -->
+        <dependency>
+            <groupId>com.github.ozlerhakan</groupId>
+            <artifactId>poiji</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+```
+2. Create poiji method to map the data
+```java
+@ToString
+public class StudentPoiji {
+    @ExcelCell(0)
+    private String name;
+    @ExcelCellName("Job")
+    private String job;
 
+}
 
+```
+3. Fetch the data
+```java
+public class StudentPoijiTest {
+    public static void main(String[] args) {
+      List<StudentPoiji> datas =  Poiji.fromExcel(new File("src/test/resources/Testdata/StudentTestData.xlsx"), StudentPoiji.class);
+       for(StudentPoiji data:datas){
+           System.out.println(data);
+       }
 
+    }
+}
+
+```
+Lets integrate this with our code 
+ - Create a new dataProvider method
+  
+```java
+@DataProvider(name="studentDataWithPoiji")
+    public Iterator<StudentPoiji> getStudentData2() throws IOException {
+        List<StudentPoiji> datas = Poiji.fromExcel(new File(Constants.excelFilePath+"/StudentTestData.xlsx"), StudentPoiji.class);
+        return datas.iterator();
+
+    }
+```   
+ - Fetch data 
+ ```java
+  @Test(dataProvider = "studentDataWithPoiji")
+    public void createUser(Student student) throws IOException {
+
+        Response response = RestUtils.performPost(Base.endpoint, student, new HashMap<>());
+        System.out.println(response);
+        Assert.assertEquals(response.statusCode(),201);
+
+    }
+ ```

@@ -1,35 +1,39 @@
 package schoolApp;
 
+
+import com.poiji.bind.Poiji;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import payloads.Payloads;
 import pojos.Student;
 import restUtils.RestUtils;
 import utils.AssertionUtils;
+import utils.Constants;
 import utils.ExcelReaderUtils;
-import utils.JsonUtils;
-import utils.PropertiesReader;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public class Students {
    /* @Test
     public void createUser() throws IOException {
-        Response response = RestUtils.performPost(Base.endpoint, Base.dataFromJsonFile, new HashMap<>());
-        //System.out.println(response.getBody().asString());
-        Assert.assertEquals(response.statusCode(),200);
+        Student std = new Student("Sandesh","Mean stack developer");
+
+        Response response = RestUtils.performPost("https://reqres.in/api/users", std, new HashMap<>());
+        System.out.println(response.getBody().asString());
+        Assert.assertEquals(response.statusCode(),201);
 
     }*/
 
-    @Test(dataProvider = "studentData")
-    public void createUser(Student student) throws IOException {
+    @Test(dataProvider = "studentDataWithPoiji")
+    public void createUser(Student student)  {
+       // System.out.println(student);
 
         Response response = RestUtils.performPost(Base.endpoint, student, new HashMap<>());
         Map<String, Object> expectedValueMap = new HashMap<>();
-        System.out.println(response);
+       System.out.println(response);
         expectedValueMap.put("name", "morpheus2");
         expectedValueMap.put("job", "leader");
         AssertionUtils.assertExpectedValuesWithJsonPath(response, expectedValueMap);
@@ -37,6 +41,8 @@ public class Students {
 
     }
 
+
+    //Fetches data from excel
     @DataProvider(name="studentData")
     public Iterator<Student> getStudentData() throws IOException {
         List<Student> stdData = new ArrayList<>();
@@ -52,4 +58,14 @@ public class Students {
         }
         return stdData.iterator();
     }
+
+    //Excel data reading with Poiji
+    @DataProvider(name="studentDataWithPoiji")
+    public Iterator<Student> getStudentData2()  {
+        List<Student> studentList = Poiji.fromExcel(new File(Constants.excelFilePath+"/StudentTestData.xlsx"), Student.class);
+        return studentList.iterator();
+
+    }
+
+
 }

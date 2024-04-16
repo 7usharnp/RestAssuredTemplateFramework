@@ -8,14 +8,12 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.SpecificationQuerier;
 import reporting.ExtentReportManager;
 
-import java.net.URL;
 import java.util.Map;
-import java.util.Objects;
 
 public class RestUtils {
 
     private static RequestSpecification getRequestSpecification(String endpoint, Object requestPayload, Map<String,String> headers){
-       return RestAssured.given()
+        return RestAssured.given()
                 .baseUri(endpoint)
                 .headers(headers)
                 .contentType(ContentType.JSON)
@@ -45,10 +43,10 @@ public class RestUtils {
     //This method will be used when payload is in string format
     public static Response performPost(String endpoint, String requestPayload, Map<String,String> headers){
         RequestSpecification requestSpecification = getRequestSpecification( endpoint,  requestPayload,  headers);
-       Response response = requestSpecification.post();
-       printRequestLogInReport(requestSpecification);
-       printResponseLogInReport(response);
-       return response;
+        Response response = requestSpecification.post();
+        printRequestLogInReport(requestSpecification);
+        printResponseLogInReport(response);
+        return response;
     }
 
     //This post method will be used when payload is in map format
@@ -65,7 +63,7 @@ public class RestUtils {
     public static Response performPost(String endpoint, Object requestPayloadPojo, Map<String,String> headers){
         RequestSpecification requestSpecification = getRequestSpecification( endpoint,  requestPayloadPojo,  headers);
         Response response = requestSpecification.post();
-        printRequestLogInReport(requestSpecification);
+       // printRequestLogInReport(requestSpecification);
         printResponseLogInReport(response);
         return response;
 

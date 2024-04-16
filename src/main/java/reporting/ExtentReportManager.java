@@ -7,12 +7,8 @@ import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.restassured.http.Header;
-import io.restassured.http.Headers;
-import org.testng.ITestResult;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -22,14 +18,14 @@ public class ExtentReportManager {
     // This method helps to create extent report
     public static ExtentReports createInstance(String filename, String reportName,String docTitle) throws IOException {
         ExtentSparkReporter extentSparkReporter = new ExtentSparkReporter(filename);
-       // extentSparkReporter.config().setCss(".brand-logo { background-image: url('https://hansentech.sharepoint.com/sites/Hansenetnews/_api/siteiconmanager/getsitelogo?type='1'&hash=638252685702277257'); }");
+        // extentSparkReporter.config().setCss(".brand-logo { background-image: url('https://hansentech.sharepoint.com/sites/Hansenetnews/_api/siteiconmanager/getsitelogo?type='1'&hash=638252685702277257'); }");
 
         extentSparkReporter.config().setReportName(reportName);
         extentSparkReporter.config().setDocumentTitle(docTitle);
         extentSparkReporter.config().setTheme(Theme.DARK);
         extentSparkReporter.config().setEncoding("utf-8");
 
-         extentReports = new ExtentReports();
+        extentReports = new ExtentReports();
         extentReports.attachReporter(extentSparkReporter);
         return extentReports;
 
@@ -62,7 +58,7 @@ public class ExtentReportManager {
         Setup.extentTest.get().info(MarkupHelper.createCodeBlock(json, CodeLanguage.JSON));
     }
     public static void logHeaders(List<Header> headersList){
-      String [][] arrayHeaders =  headersList.stream().map(header -> new String[]{header.getName(),  header.getValue()}).toArray(String[][]::new);
+        String [][] arrayHeaders =  headersList.stream().map(header -> new String[]{header.getName(),  header.getValue()}).toArray(String[][]::new);
         Setup.extentTest.get().info(MarkupHelper.createTable(arrayHeaders));
     }
 

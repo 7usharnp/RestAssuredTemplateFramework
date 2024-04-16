@@ -1,12 +1,18 @@
 package pojos;
 
-import lombok.Builder;
-import lombok.Data;
+import com.poiji.annotation.ExcelCell;
+import com.poiji.annotation.ExcelCellName;
+import lombok.*;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Student {
+    @ExcelCell(0)
     private String name;
+    @ExcelCellName("Job")
     private String job;
 
 }

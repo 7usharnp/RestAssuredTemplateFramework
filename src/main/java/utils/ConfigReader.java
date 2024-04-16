@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class PropertiesReader {
-    public static String readPropertiesFile(String attribute) {
+public class ConfigReader {
+    public static String getProperty(String attribute) {
         String filePath = System.getProperty("user.dir") + "\\src\\test\\resources\\Students\\PropertiesFiles\\prop.properties";
         Properties properties = new Properties();
         try (InputStream input = new FileInputStream(filePath)) {
